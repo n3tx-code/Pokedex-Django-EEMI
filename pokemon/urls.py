@@ -1,11 +1,10 @@
 from django.urls import path
 
-from pokemon.views import pika, pokemon_detail, type_detail, pokemon_list
+from pokemon.views import pika, PokemonDetailView, PokemonListView, TypeDetailView
 
 urlpatterns = [
-    path("<int:id>", pokemon_detail, name="pokemon_detail"),
-    path("liste", pokemon_list, name="pokemon_list"),
+    path("<int:pk>", PokemonDetailView.as_view(), name="pokemon_detail"),
+    path("liste", PokemonListView.as_view(), name="pokemon_list"),
     path("pika", pika, name="pika"),
-    path("type/<int:id>", type_detail, name="type_detail"),
-
+    path("type/<int:pk>", TypeDetailView.as_view(), name="type_detail"),
 ]

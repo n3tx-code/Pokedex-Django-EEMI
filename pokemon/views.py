@@ -1,44 +1,50 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 
-POKEMONS = (
-    {"name": "Rondoudou", "type": 0},
-    {"name": "Kyogre", "type": 1},
-    {"name": "Lippoutou", "type": 3},
-    {"name": "Tadmorv", "type": 2},
-    {"name": "cliticlic", "type": 5},
-)
+from pokemon.forms import ContactForm
+from pokemon.models import Pokemon, PokemonType
 
 
-def home(request):
-    name = request.GET.get("name", "")
-    if name:
-        return HttpResponse(f"Hello {name}")
+class HomeView(TemplateView):
+    template_name = "home.html"
 
-    return render(request, "home.html", {
-        "sub_title": "Explorez le monde de Pokémon avec notre Pokedex complet. Trouvez des détails sur votre Pokémon préféré."})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["sub_title"] = "Coucou ceci est le contenu de la varible de context sub_title"
+        context["pokemon"] = Pokemon.objects.all().order_by("?").first()
+        return context
 
 
 def pika(request):
     return HttpResponse("Pika pika")
 
 
-def contact(request):
-    if request.method == "POST":
-        name = request.POST.get("name", "")
-        return HttpResponse(f"Merci {name} pour ton message")
-    return render(request, "contact.html")
+class ContactView(FormView):
+    template_name = "contact.html"
+    form_class = ContactForm
+    success_url = reverse_lazy("homepage")
+
+    def form_valid(self, form):
+        '''
+        Save all the message send from the contat form in the database :
+        - create a model (make the migration and apply them)
+        - save the model
+        '''
+        print('coucou')
+        return super().form_valid(form)
 
 
-def pokemon_detail(request, id):
-    return render(request, "pokemon.html", {"pokemon": POKEMONS[id]})
+class PokemonDetailView(DetailView):
+    model = Pokemon
+    template_name = "pokemon.html"
 
 
-def type_detail(request, id):
-    types_pokemon = ["Normal", "Feu", "Eau", "Plante", "Électrik", "Glace", "Combat", "Poison", "Sol", "Vol", "Psy",
-                     "Insecte", "Roche", "Spectre", "Dragon", "Ténèbres", "Acier", "Fée"]
-    return render(request, "type.html", {"type": types_pokemon[id]})
+class TypeDetailView(DetailView):
+    model = PokemonType
+    template_name = "type.html"
 
 
-def pokemon_list(request):
-    return render(request, "pokemon_list.html", {"pokemons": POKEMONS})
+class PokemonListView(ListView):
+    model = Pokemon
+    template_name = "pokemon_list.html"

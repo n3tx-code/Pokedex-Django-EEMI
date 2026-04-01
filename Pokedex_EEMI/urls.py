@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.urls import include, path
 
-from pokemon.views import contact, home
+from pokemon.views import ContactView, HomeView
 
 urlpatterns = [
-    path("", home, name="homepage"),
-    path("contact", contact, name="contact"), 
-    path("pokemon/", include("pokemon.urls"))
+    path("", HomeView.as_view(), name="homepage"),
+    path("contact", ContactView.as_view(), name="contact"),
+    path("pokemon/", include("pokemon.urls")),
+    path('admin/', admin.site.urls),
 ]

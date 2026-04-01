@@ -35,3 +35,33 @@ python manage.py runserver
 ```bash
 ./manage.py startapp pokemon
 ```
+
+# Migration
+
+1. Make migrations for the "pokemon" app
+
+```bash
+python manage.py makemigrations pokemon
+```
+
+2. Apply the migrations to the database
+
+```bash
+python manage.py migrate
+```
+
+# Django shell
+
+1. Open the Django shell
+
+```bash
+python manage.py shell
+```
+
+2. Create a pokemon in the shell
+
+```python
+from pokemon.models import Pokemon
+
+Pokemon.objects.create(name="Pikachu")
+```
