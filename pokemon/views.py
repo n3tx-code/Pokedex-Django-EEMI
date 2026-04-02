@@ -1,6 +1,8 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 
 from pokemon.forms import ContactForm
 from pokemon.models import Pokemon, PokemonType
@@ -37,7 +39,7 @@ class ContactView(FormView):
 
 class PokemonDetailView(DetailView):
     model = Pokemon
-    template_name = "pokemon.html"
+    template_name = "pokemon/detail.html"
 
 
 class TypeDetailView(DetailView):
@@ -48,3 +50,41 @@ class TypeDetailView(DetailView):
 class PokemonListView(ListView):
     model = Pokemon
     template_name = "pokemon_list.html"
+
+
+class PokemonCreateView(LoginRequiredMixin, CreateView):
+    model = Pokemon
+    template_name = "pokemon/create.html"
+    fields = ["name", "types"]
+
+    def form_valid(self, form):
+        if Pokemon.objects.filter(name=form.cleaned_data["name"]).exists():
+            messages.add_message(self.request, messages.ERROR, "Un pokémon avec le même nom existe déjà")
+            return super().form_invalid(form)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        pokemon = Pokemon.objects.last()
+        messages.add_message(self.request, messages.SUCCESS, "Pokemon crée")
+        return reverse_lazy("pokemon_detail", kwargs={"pk": pokemon.id})
+
+
+class PokemonUpdateView(LoginRequiredMixin, UpdateView):
+    model = Pokemon
+    fields = ["name", "types"]
+    template_name = "pokemon/update.html"
+
+    def get_success_url(self):
+        pokemon = self.object
+        messages.add_message(self.request, messages.SUCCESS, "Pokemon mis à jour")
+        return reverse_lazy("pokemon_detail", kwargs={"pk": pokemon.id})
+
+
+class PokemonDeleteView(LoginRequiredMixin, DeleteView):
+    model = Pokemon
+    template_name = 'pokemon/delete.html'
+
+    def get_success_url(self):
+        pokemon = self.object
+        messages.add_message(self.request, messages.SUCCESS, f"{pokemon.name} est mort")
+        return reverse_lazy("pokemon_list")

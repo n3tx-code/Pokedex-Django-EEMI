@@ -2,6 +2,7 @@
 {% block content %}
     <div class="container mt-5">
         <h1>{{ pokemon.name }}</h1>
+        <a href="{% url 'pokemon_update' pk=pokemon.pk %}">Modifier ce pokémon</a>
         <p>
             Ceci est la page de description d'un pokémon.
         </p>
@@ -14,5 +15,7 @@
                 <p>Ce pokémon n'a pas de type</p>
             {% endfor %}
         </ul>
+
+        <a href="{% url 'pokemon_delete' pk=pokemon.pk %}">Supprimer ce pokémon</a>
     </div>
 {% endblock %}

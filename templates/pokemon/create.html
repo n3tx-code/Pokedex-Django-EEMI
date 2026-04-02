@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form action="{% url 'pokemon_add' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+{% endblock %}

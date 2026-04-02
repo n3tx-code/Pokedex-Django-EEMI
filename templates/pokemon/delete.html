@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container mt-5">
+        <h1>Suppression {{ pokemon.name }}</h1>
+        <a href="{% url 'pokemon_detail' pk=pokemon.pk %}">Retour sur le détail du pokémon</a>
+        <p>
+            Tu es sûr de vouloir supprimer ce pokémon ?
+        </p>
+        <form action="{% url 'pokemon_delete' pk=pokemon.pk %}" method="POST">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <button type="submit" class="btn btn-primary">Supprimer le pokémon</button>
+        </form>
+    </div>
+{% endblock %}

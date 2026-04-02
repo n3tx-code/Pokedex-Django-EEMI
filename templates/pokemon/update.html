@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Mise à jour de {{ pokemon.name }}</h1>
+    <form action="{% url 'pokemon_update' pk=pokemon.pk %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+{% endblock %}
