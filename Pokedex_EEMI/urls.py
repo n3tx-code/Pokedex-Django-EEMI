@@ -8,4 +8,5 @@ urlpatterns = [
     path("contact", ContactView.as_view(), name="contact"),
     path("pokemon/", include("pokemon.urls")),
     path('admin/', admin.site.urls),
+    path('user/', include("user.urls"))
 ]
